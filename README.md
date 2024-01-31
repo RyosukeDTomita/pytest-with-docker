@@ -70,7 +70,7 @@
 
 ```shell
 docker buildx bake
-docker compose run pytest-env "cd /pytest-with-docker && /pyenv/versions/3.9.6/bin/pytest
+docker compose run pytest-env "cd /pytest-with-docker && /pyenv/versions/3.9.6/bin/pytest"
 ```
 
 > [!Note]
