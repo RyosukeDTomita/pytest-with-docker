@@ -1,0 +1,32 @@
+name: unit-test
+on: push
+
+jobs:
+  unit-test-job:
+    name: run unit-test job
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: build docker images
+        # CMDでpytestを実行するとpytestが失敗してもjobとしては成功になってしまう(docker compose upのステータスがCMDが実行できた時点で0になるため)。
+        # docker compose up後にdocker runで実行しようとすると以下のエラーが発生する(メモリ不足?)のためbuildしてからrunするようにしている。
+        # shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+        # docker: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process
+        run: |
+          # docker compose up -d
+          docker buildx bake
+
+      - name: run pytest
+        run: |
+          # PYTHON_VERSION is set in Dockerfile
+          export IMAGE_NAME=$(fgrep "image:" ./docker-compose.yml | awk -F ' ' '{print $2}')
+          export PYTHON_VERSION=$(docker inspect --format='{{index .Config.Env}}' ${IMAGE_NAME} | grep -oP "PYTHON_VERSION=\S+" | tr -d "PYTHON_VERSION=")
+          export CONTAINER_NAME=$(fgrep "container_name:" ./docker-compose.yml | awk -F ' ' '{print $2}')
+          # docker exec ${CONTAINER_NAME} /bin/bash -c "cd /ManagementTools && /pyenv/versions/${PYTHON_VERSION}/bin/pytest"
+          docker run ${IMAGE_NAME} "cd /pytest-with-docker && /pyenv/versions/${PYTHON_VERSION}/bin/pytest"
+

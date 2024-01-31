@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  pytest-env:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: pytest-image:latest
+    container_name: pytest-container
+    volumes:
+      - ./:/pytest-with-docker
