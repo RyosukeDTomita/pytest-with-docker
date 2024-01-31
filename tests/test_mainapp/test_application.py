@@ -46,7 +46,7 @@ def test_score_out(capsys):
     assert out == ("{}\n".format(result))
 
 
-@pytest.mark.parametrize(("name, expected"), [
+@pytest.mark.parametrize(("name", "expected"), [
     ("john", "hello john"),
     ("tom", "hello tom"),
 
