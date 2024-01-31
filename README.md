@@ -18,6 +18,7 @@
 - pytestのpyファイル名は`test_application.py`のように命名する。
 - pytestのpyファイルは`tests/test_mainapp`のようにする。
 - 各ディレクトリに`__init__.py`を配置する。
+- [pytest](https://rinatz.github.io/python-book/ch08-02-pytest/)の詳細はこちらを参照。
 
 ```
 .
